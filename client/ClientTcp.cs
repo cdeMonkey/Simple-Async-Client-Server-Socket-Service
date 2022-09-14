@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -13,8 +15,10 @@ namespace client
     public class ClientTcp
     {
 
+
         public ClientTcp()
         {
+
 
         }
 
@@ -26,9 +30,12 @@ namespace client
             try
             {
                 TcpClient tcpClient = new TcpClient();
+
+                //client should be connected before streamwriter
+                tcpClient.Connect(ip, port);
+
                 StreamWriter sWriter = new StreamWriter(tcpClient.GetStream(), Encoding.ASCII);
 
-                tcpClient.Connect(ip, port);
 
                 Stopwatch timer = new Stopwatch();
 
@@ -38,26 +45,40 @@ namespace client
                 //check if client is connected
                 while (tcpClient.Connected)
                 {
-                    if(exit == 1)
+                    if(exit == 2)
                     {
-                        MessageBox.Show("Closing connection for violating message count per second rule.");
+                        MessageBox.Show( "Closing connection for violating message count per second rule.");
+
+
+                        Console.WriteLine("Connection Closed");
+
                         tcpClient.Close();
+
+                        break;
 
                     }
 
-                    timer.Start();
+                    timer.Restart();
                     Console.WriteLine("Enter message to send:");
                     string message =  Console.ReadLine();
 
-                    if(timer.ElapsedMilliseconds <= 1000)
+                    //check time inbetween sent messages
+                    if (timer.ElapsedMilliseconds <= 1000)
                     {
-                        MessageBox.Show("You can not send more than 1 message per second.");
+
+
+                        MessageBox.Show("You can not send more than 1 message per second. Click OK");
                         exit++;
                     }
+                    else
+                    {
+                        sWriter.WriteLine(message);
+                        sWriter.Flush();
+                    }
 
-                    sWriter.WriteLine(message);
-                    sWriter.Flush();
-                    timer.Stop();
+
+
+
                 }
 
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace client
 {
@@ -16,7 +17,7 @@ namespace client
             ClientTcp toServer = new ClientTcp();
 
             //connect to server here
-            toServer.startClient("192.168.1.34", 30000);
+            toServer.startClient("192.168.1.34", 30000 );
 
         }
     }
