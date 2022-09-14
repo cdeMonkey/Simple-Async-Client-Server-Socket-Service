@@ -1,4 +1,5 @@
-﻿using System;
+﻿using client;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +11,11 @@ namespace server
     {
         static void Main(string[] args)
         {
+            //start server
+            TcpServer server = new TcpServer();
+            
+            //start server using a specified port
+            server.RunServer(30000);
         }
     }
 }
